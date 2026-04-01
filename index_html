@@ -1,0 +1,202 @@
+import { useState } from "react";
+
+// 10 questions, 4 choices each
+const questions = [
+  {
+    q: "연애 초반 나는?",
+    a: [
+      { text: "빠르게 가까워짐", type: "열정형" },
+      { text: "천천히 알아감", type: "신중형" },
+      { text: "상대 반응을 많이 봄", type: "애정확인형" },
+      { text: "편하게 흘러가는대로", type: "자유형" }
+    ]
+  },
+  {
+    q: "연락 스타일은?",
+    a: [
+      { text: "자주 해야 함", type: "애정확인형" },
+      { text: "적당히", type: "자유형" },
+      { text: "상황에 따라", type: "신중형" },
+      { text: "하고 싶을 때", type: "열정형" }
+    ]
+  },
+  {
+    q: "데이트 스타일은?",
+    a: [
+      { text: "계획형", type: "신중형" },
+      { text: "즉흥형", type: "열정형" },
+      { text: "로맨틱 위주", type: "감성형" },
+      { text: "편한 게 최고", type: "안정형" }
+    ]
+  },
+  {
+    q: "갈등이 생기면?",
+    a: [
+      { text: "바로 해결", type: "열정형" },
+      { text: "시간 두고 생각", type: "신중형" },
+      { text: "상대 반응 확인", type: "애정확인형" },
+      { text: "피하고 싶음", type: "자유형" }
+    ]
+  },
+  {
+    q: "사랑 표현은?",
+    a: [
+      { text: "말로 많이", type: "애정확인형" },
+      { text: "행동으로", type: "안정형" },
+      { text: "분위기로", type: "감성형" },
+      { text: "필요할 때만", type: "자유형" }
+    ]
+  },
+  {
+    q: "연애에서 중요한 것",
+    a: [
+      { text: "설렘", type: "열정형" },
+      { text: "안정감", type: "안정형" },
+      { text: "신뢰", type: "신중형" },
+      { text: "자유", type: "자유형" }
+    ]
+  },
+  {
+    q: "질투는?",
+    a: [
+      { text: "많음", type: "애정확인형" },
+      { text: "적당", type: "감성형" },
+      { text: "거의 없음", type: "자유형" },
+      { text: "숨김", type: "신중형" }
+    ]
+  },
+  {
+    q: "연애 템포",
+    a: [
+      { text: "빠름", type: "열정형" },
+      { text: "느림", type: "신중형" },
+      { text: "상대 맞춤", type: "애정확인형" },
+      { text: "내 페이스", type: "자유형" }
+    ]
+  },
+  {
+    q: "이별 후 나는",
+    a: [
+      { text: "금방 잊음", type: "자유형" },
+      { text: "오래 생각", type: "감성형" },
+      { text: "이유 분석", type: "신중형" },
+      { text: "바로 다른 사랑", type: "열정형" }
+    ]
+  },
+  {
+    q: "이상적인 연애는?",
+    a: [
+      { text: "영화 같은", type: "감성형" },
+      { text: "편안한", type: "안정형" },
+      { text: "자유로운", type: "자유형" },
+      { text: "뜨거운", type: "열정형" }
+    ]
+  }
+];
+
+// 6 types
+const resultMap = {
+  열정형: {
+    desc: "사랑에 올인하는 불꽃 타입 🔥",
+    match: "안정형"
+  },
+  신중형: {
+    desc: "천천히 깊어지는 현실파 🧠",
+    match: "열정형"
+  },
+  애정확인형: {
+    desc: "표현과 확인이 중요한 타입 💬",
+    match: "자유형"
+  },
+  자유형: {
+    desc: "쿨하고 독립적인 연애 🕊",
+    match: "애정확인형"
+  },
+  감성형: {
+    desc: "감정과 분위기를 중시 🌙",
+    match: "안정형"
+  },
+  안정형: {
+    desc: "편안함과 지속성을 중요시 🌿",
+    match: "열정형"
+  }
+};
+
+export default function LoveStyleApp() {
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState([]);
+
+  const handleAnswer = (type) => {
+    const newAnswers = [...answers, type];
+    setAnswers(newAnswers);
+
+    if (step + 1 < questions.length) {
+      setStep(step + 1);
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  const getResult = () => {
+    const count = {};
+    answers.forEach((a) => {
+      count[a] = (count[a] || 0) + 1;
+    });
+
+    return Object.keys(count).reduce((a, b) =>
+      count[a] > count[b] ? a : b
+    );
+  };
+
+  const restart = () => {
+    setStep(0);
+    setAnswers([]);
+  };
+
+  if (step >= questions.length) {
+    const result = getResult();
+    const data = resultMap[result];
+
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50 p-6">
+        <h1 className="text-3xl font-bold mb-4">결과 💕</h1>
+        <div className="bg-white p-6 rounded-2xl shadow-xl text-center">
+          <h2 className="text-2xl font-semibold mb-2">{result}</h2>
+          <p className="mb-4">{data.desc}</p>
+          <p className="font-medium">💘 궁합 좋은 스타일: {data.match}</p>
+
+          <button
+            onClick={restart}
+            className="mt-4 px-5 py-2 bg-pink-400 text-white rounded-xl"
+          >
+            다시 하기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const current = questions[step];
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-pink-100 p-6">
+      <h1 className="text-2xl font-bold mb-4">연애 스타일 테스트 💕</h1>
+      <p className="mb-4">{step + 1} / {questions.length}</p>
+
+      <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+        <p className="mb-4">{current.q}</p>
+        <div className="flex flex-col gap-3">
+          {current.a.map((choice, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleAnswer(choice.type)}
+              className="p-3 bg-pink-200 rounded-xl hover:bg-pink-300"
+            >
+              {choice.text}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
